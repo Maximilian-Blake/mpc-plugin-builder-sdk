@@ -28,6 +28,10 @@ The `test` command fails on NaN/infinite output, crashes, and state that does no
 
 Replacing a plugin: copy the new folder over the old one, then remove and re-add the plugin on the track (or restart the MPC if the skins changed).
 
+### MPC Sample
+
+The MPC Sample (firmware v1.4.0 or later) loads effects only. Install through its microSD card: connect it to the computer with USB, turn on **Custom Plug-In Support** (MIDI Config → Dev Enhancements (Beta)), enter **SD Card Access** mode from the Project screen, copy the plugin folder into `VST2 Plugins` at the top level of the card, eject the card on the computer, then exit SD Card Access mode. The effect appears at the bottom of the **FX Select** list. Full steps: `knob-fx.md`. Use this route rather than the network install below.
+
 ### Or install over the network
 
 If the MPC is on the same network as your computer, `tools/mpc_remote.py` copies the plugin for you and can also list, update, remove and export plugins on the device:

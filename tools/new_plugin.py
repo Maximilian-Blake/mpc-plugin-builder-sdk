@@ -126,6 +126,7 @@ def main() -> int:
         "NAME": name,
         "CLASS": make_class_name(name),
         "VENDOR": vendor,
+        "SHORT_NAME": name[:12].rstrip(),   # MPC Sample: the name shown in the Knob FX list
         "UID": make_uid(vendor, name),
         "SLUG": make_slug(name),
         "KIND": args.kind,

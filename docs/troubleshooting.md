@@ -49,6 +49,18 @@ The report says which phase. Crashes in `prepare` are usually buffers sized from
 - Is `numOutputs` greater than 0?
 - Run `tools/validate.py` on the built folder.
 
+**MPC Sample: the effect is not in the Knob FX list**
+- Is the MPC Sample on firmware v1.4.0 or later?
+- Are **Dev Enhancements (Beta)** and **Custom Plug-In Support** both on in **MIDI Config**?
+- Is the plugin folder directly inside `VST2 Plugins` at the top level of the microSD card?
+- Did you eject the SD card on the computer and then exit **SD Card Access** mode? Plugins copied without ejecting may be incomplete.
+- Look at the bottom of the **FX Select** list: external effects come after the built-in ones.
+- Is it an effect? The MPC Sample does not load instruments.
+- Does `plugin.json` have `file64`? The MPC Sample is 64-bit.
+
+**MPC Sample: knobs show `Param 1`, `-`, or control the wrong parameter**
+`knobs` / `shiftKnobs` in `plugin.json` are missing, have no `label`, or use the wrong index. `parameter` is 0-based (the position of the `addParam` call), while `Param <n>` counts from 1. A knob shows `-` when its parameter is missing, not a whole number, or past the plugin's last parameter. `tools/validate.py` prints the resolved mapping; see `knob-fx.md`.
+
 **"VST2 failed to load" message**
 The library could not be loaded or returned nothing. Causes: wrong architecture file (validator checks this), a glibc symbol too new, a missing shared library dependency, a crash during `VSTPluginMain` (test natively first), or the drive's mount options preventing code execution. Try the MPC's internal drive instead of a USB stick.
 

@@ -9,6 +9,7 @@ description: Write or change the audio code (DSP, voices, MIDI handling, paramet
 
 Read `framework/mpc_plugin.h` (class `mpc::Plugin`) before editing. Key points:
 - Declare parameters in the constructor with `addParam(mpc::floatParam/logParam/intParam/boolParam/choiceParam(...))`; keep the returned index in a member. Order = parameter index = what the MPC sees. Append new parameters at the end; never reorder or rename `id` strings.
+- **Effects: the MPC Sample Knob FX mapping uses the same indices.** `knobs` / `shiftKnobs` in `plugin.json` name parameters by 0-based index (`{"parameter": 2, "label": "Time"}`), up to 3 each. Whenever you add, remove or re-purpose a parameter, check the mapping still points at the parameters you mean (`python tools/validate.py plugins/<Name>` prints it). Parameters not on a knob stay at program 0's value on the MPC Sample. See `docs/knob-fx.md`.
 - Read values in `process()` with `get(i)` (plain value), `getBool(i)`, `getInt(i)`. Smooth anything audible with `dsp::Smoother`.
 - `process(mpc::ProcessContext& ctx)`: `ctx.inputs[ch][i]` (may be null for 0-input instruments), `ctx.outputs[ch][i]` (already zeroed), `ctx.numFrames`, `ctx.midi[0..numMidiEvents)` sorted by `sampleOffset`, `ctx.transport` (bpm, ppqPos, playing), `ctx.sampleRate`.
 - `prepare(sampleRate, maxBlock)` allocates and sets coefficients; `reset()` clears state (called on resume and after state load).
@@ -34,6 +35,6 @@ One instance should use well under 15% of a Cortex-A17 core at 128 frames / 44.1
 
 ## After changing code
 
-Rebuild and run the host simulator (`mpc-plugin-test` skill). If you added parameters, update `ui.json` and the README's parameter list, and bump `version` in `plugin.json`.
+Rebuild and run the host simulator (`mpc-plugin-test` skill). If you added parameters, update `ui.json`, the Knob FX mapping (effects) and the README's parameter list, and bump `version` in `plugin.json`.
 
 More: `docs/dsp-cookbook.md`, `docs/host-contract.md`.

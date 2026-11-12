@@ -67,10 +67,47 @@
             "description": "Path, relative to the plugin folder, of the 64-bit ARM (AArch64) shared object: \"VST/<slug>-arm64.so\".",
             "examples": ["VST/wobble-bass-arm64.so"]
         },
+        "shortName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 12,
+            "description": "MPC Sample: the name shown where there is little room (the Knob FX list). Without it, the MPC Sample shows the first 12 characters of name. See docs/knob-fx.md."
+        },
+        "knobs": {
+            "$ref": "#/definitions/knobList",
+            "description": "MPC Sample Knob FX: what knobs 1, 2 and 3 control, in that order. See docs/knob-fx.md."
+        },
+        "shiftKnobs": {
+            "$ref": "#/definitions/knobList",
+            "description": "MPC Sample Knob FX: what knobs 1, 2 and 3 control while SHIFT is held, in that order. See docs/knob-fx.md."
+        },
         "description": {"type": "string", "description": "Optional one-line description used for packaging and the README; ignored by the MPC."},
         "author": {"type": "string", "description": "Optional author name for packaging; ignored by the MPC."},
         "url": {"type": "string", "description": "Optional project URL for packaging; ignored by the MPC."},
         "license": {"type": "string", "description": "Optional license identifier for packaging; ignored by the MPC."}
     },
-    "additionalProperties": true
+    "additionalProperties": true,
+    "definitions": {
+        "knobList": {
+            "type": "array",
+            "maxItems": 3,
+            "description": "Up to 3 entries; entry 0 is knob 1. The MPC Sample ignores any entry after the third.",
+            "items": {
+                "type": "object",
+                "description": "One knob. {} leaves the knob unassigned (it shows \"-\").",
+                "properties": {
+                    "parameter": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "0-based parameter index: the position of the parameter's addParam() call. An index the plugin does not have leaves the knob unassigned."
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "The knob's name on screen; keep it to about 8 characters. Without it the MPC Sample shows \"Param <index + 1>\", not the parameter's own name."
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    }
 }

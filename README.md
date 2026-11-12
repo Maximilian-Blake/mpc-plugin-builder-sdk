@@ -4,9 +4,11 @@ MPC Plugin SDK
 
 This SDK allows you to build instrument and effect plugins for Akai MPC standalone hardware from a plain-language description using an AI coding agent, and install it directly onto your MPC. It writes C++ that you never have to read if you do not want to.
 
-The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Force (32-bit) and MPC Live III, MPC XL and later (64-bit).
+The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Force (32-bit) and MPC Live III, MPC XL and later (64-bit). Effects also run on the **MPC Sample** (64-bit) as Knob FX.
 
 **Plugin support requires MPC OS 3.10.1 or later, with the External Plugin Support feature enabled on the device**: Preferences → Enhancements (Beta) → turn on *Enable Enhancements* and *External Plugin Support*.
+
+**MPC Sample**: firmware v1.4.0 or later; in *MIDI Config* turn on *Dev Enhancements (Beta)* and *Custom Plug-In Support*, then copy plugins to `VST2 Plugins` on its microSD card through *SD Card Access* mode. It loads effect plugins only, not instruments, and has no plugin screen: each effect exposes 6 parameters on its knobs (3, plus 3 more while holding SHIFT), set in `plugin.json`. See [docs/knob-fx.md](docs/knob-fx.md).
 
 
 ```mermaid
@@ -77,7 +79,7 @@ Paste one of these prompts into your agent with the SDK folder open:
 
 - Python 3.9 or newer. Everything else (the Zig cross compiler) is fetched on first build, or use your own GNU cross compilers / Docker (`docs/building.md`).
 - macOS, Windows or Linux.
-- An MPC running MPC OS 3.10.1 or later, with External Plugin Support enabled in Preferences → Enhancements (Beta), plus a USB drive or SD card.
+- An MPC running MPC OS 3.10.1 or later, with External Plugin Support enabled in Preferences → Enhancements (Beta), plus a USB drive or SD card; or an MPC Sample running firmware v1.4.0 or later with Custom Plug-In Support on (effects only), a microSD card and a USB cable.
 
 ## How it works, briefly
 

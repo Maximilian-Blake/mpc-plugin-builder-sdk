@@ -20,8 +20,10 @@ Read the report:
 - `WARN`: silence from an instrument (no voice triggered?), clipping (reduce gain), denormals, high CPU, effect not passing silence.
 - Timing: the simulator reports CPU on your machine; the MPC is 10–40× slower. Keep the simulator's average under a few percent.
 
+For effects, `python tools/validate.py plugins/<Name>` prints the MPC Sample Knob FX mapping, one line per knob (`knob 1 -> [2] "Time", label "Time", value "350 ms"`). Check every knob names the intended parameter and that the value text is short.
+
 Then listen to the WAV (ask the user to, or describe what to expect). For "no sound" problems: check `isNoteOn` handling, envelope attack/gate, output gain, and that `ctx.outputs` is written. For "clicks": smooth parameters, add short attack/release, avoid resetting phase on every block.
 
-When the tests pass, ASK whether they want it installed on a standalone MPC over the network for a real test (never install without a yes; ask for the IP address). See `mpc-plugin-deploy`.
+When the tests pass, ASK whether they want it installed on a standalone MPC over the network for a real test (never install without a yes; ask for the IP address). For an effect, also ask whether they want it installed on an MPC Sample through its microSD card. See `mpc-plugin-deploy`.
 
-Finally remind the user to test on the MPC itself (`docs/install-and-test.md`): copy the folder into `VST2 Plugins`, enable Preferences → Enhancements (Beta) → External Plugin Support, load it, save and reload a project.
+Finally remind the user to test on the MPC itself (`docs/install-and-test.md`): copy the folder into `VST2 Plugins`, enable Preferences → Enhancements (Beta) → External Plugin Support, load it, save and reload a project. On an MPC Sample (effects only): install it through the microSD card in SD Card Access mode (`mpc-plugin-deploy`), pick it at the bottom of the FX Select list, turn each knob with and without SHIFT, and check labels and values.

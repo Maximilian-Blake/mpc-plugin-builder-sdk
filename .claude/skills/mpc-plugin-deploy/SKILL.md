@@ -1,9 +1,49 @@
 ---
 name: mpc-plugin-deploy
-description: Install, list, update, remove or export VST2 plugins on a real Akai MPC over the network (SSH, developer mode) with tools/mpc_remote.py, and walk the user through setting the MPC up (Enhancements, External Plugin Support, developer mode). Use when the user wants a plugin put on their MPC automatically, gives an MPC IP address, or asks to back up or manage plugins on the device.
+description: Install, list, update, remove or export VST2 plugins on a real Akai MPC over the network (SSH, developer mode) with tools/mpc_remote.py, and walk the user through setting the MPC up (Enhancements, External Plugin Support, developer mode). Also installs effects on an MPC Sample through its microSD card in SD Card Access mode. Use when the user wants a plugin put on their MPC or MPC Sample, gives an MPC IP address, or asks to back up or manage plugins on the device.
 ---
 
-# Deploy to an MPC over the network
+# Deploy to an MPC
+
+## MPC Sample: install through its microSD card
+
+An MPC Sample is not installed over the network: do not use `mpc_remote.py` for it. Its plugins go in `VST2 Plugins` on its microSD card, which the computer sees while the MPC Sample is in **SD Card Access** mode (`docs/knob-fx.md`). If the user says "my MPC" and you do not know which model, ask.
+
+1. **Check the plugin.** It must be an **effect**; the MPC Sample does not load instruments, so tell the user and stop for an instrument. It must have passed the build and `host_sim` checks, and `plugins/<Name>/build/` must hold the `"<Manufacturer> - VST - <Name>"` folder with `file64` (the MPC Sample is 64-bit).
+2. **One message to the user, then wait for the answer.** Ask them to:
+   - put a microSD card in the MPC Sample and connect it to the computer with USB;
+   - on the MPC Sample, open **MIDI Config** and, in the **Dev Enhancements (Beta)** section, turn on **Dev Enhancements (Beta)** and **Custom Plug-In Support** (only needed once);
+   - enter **SD Card Access** mode from the **Project** screen, so the card appears on the computer;
+   - tell you when the card is showing on the computer.
+
+   In the same message, **ask whether you may eject the SD card from the computer when you have finished copying**, and say why you are asking: they might be using that card on the computer for something else. Only eject if they say yes.
+3. **Find the card.** macOS: `ls /Volumes`. Linux: `findmnt -rno TARGET,SOURCE,FSTYPE | grep -E ' (/media|/run/media)/'`. Windows (PowerShell): `Get-Volume | Where-Object DriveType -eq 'Removable'`. If exactly one removable volume is there, use it and name it in your next message. If there are none or several, show the list and ask which one. Never write to the system disk or any other drive.
+4. **Copy.** Copy the whole folder into `VST2 Plugins` at the top level of the card (create `VST2 Plugins`, spelled exactly like that, if it is missing). If a folder with the same name is already there, this is an update: replace it, and say so. Copy into a staging folder at the card root first, so a failed copy never leaves half a plugin in `VST2 Plugins`:
+
+   ```
+   python3 -I - "plugins/<Name>/build/<Manufacturer> - VST - <Name>" "<card mount point>" <<'EOF'
+   import os, shutil, sys
+   src, card = os.path.normpath(sys.argv[1]), sys.argv[2]
+   name = os.path.basename(src)
+   plugins = os.path.join(card, "VST2 Plugins"); os.makedirs(plugins, exist_ok=True)
+   stage = os.path.join(card, ".mpc-sdk-staging"); shutil.rmtree(stage, ignore_errors=True)
+   shutil.copytree(src, os.path.join(stage, name), copy_function=shutil.copyfile,
+                   ignore=shutil.ignore_patterns(".DS_Store", "Thumbs.db", "._*"))
+   dest = os.path.join(plugins, name)
+   if os.path.isdir(dest): shutil.rmtree(dest)
+   os.replace(os.path.join(stage, name), dest); os.rmdir(stage)
+   def files(root): return {os.path.relpath(os.path.join(r, f), root): os.path.getsize(os.path.join(r, f))
+                            for r, _d, fs in os.walk(root) for f in fs if f not in (".DS_Store", "Thumbs.db") and not f.startswith("._")}
+   assert files(src) == files(dest), "copy differs from the build folder"
+   print("installed", dest)
+   EOF
+   ```
+
+   It writes nothing outside `VST2 Plugins` and the short-lived `.mpc-sdk-staging` folder. Never delete or change anything else on the card.
+5. **Eject (only with permission).** macOS: `diskutil eject "<card mount point>"`. Linux: `udisksctl unmount -b "$(findmnt -no SOURCE "<card mount point>")"`. Windows (PowerShell): `(New-Object -ComObject Shell.Application).Namespace(17).ParseName('E:').InvokeVerb('Eject')` with the card's drive letter, then check the drive has gone. If ejecting fails (the card is busy), say which program may be holding it and let the user eject; never force it. Without permission, tell the user to eject the card on the computer themselves.
+6. **Tell the user what to do next:** once the card is ejected, exit **SD Card Access** mode on the MPC Sample. The effect then appears as a Knob FX at the **bottom of the FX Select list**; no restart is needed. Remind them of its 3 knobs and 3 SHIFT knobs (from `plugin.json`). If it does not appear, use `mpc-plugin-troubleshoot`.
+
+## Other MPCs: over the network
 
 `tools/mpc_remote.py` talks to an MPC on the local network over SSH and manages the `VST2 Plugins` folder of one of its drives. It needs only Python 3.9+ and the computer's `ssh` command (use `python3` if `python` is not found).
 
@@ -46,6 +86,8 @@ Always pass `--drive` and `--yes` when you drive it from an agent shell: there i
 Add `--no-color` when output is captured. Exit codes: 0 ok, 1 an operation failed, 2 the MPC is not reachable or not set up (read the diagnostic panel).
 
 ## Workflow for "put my plugin on my MPC"
+
+For an MPC Sample, use the MPC Sample section above instead.
 
 1. Make sure the plugin is built and tested (`mpc-plugin-build`, `mpc-plugin-test`): `plugins/<Name>/build/` must hold the `"<Manufacturer> - VST - <Name>"` folder. Never deploy something that has not passed the build and `host_sim` checks.
 2. Run `info` (or `doctor`) to confirm the connection and pick the drive.

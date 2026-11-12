@@ -7,6 +7,8 @@ description: Design or change an MPC plugin's touch-screen UI and hardware knob 
 
 The MPC draws plugin UIs from JSON skins in `Plugin Skins/`. Two ways to produce them. Use A unless the user asks for something it cannot do.
 
+**MPC Sample**: it ignores skins and `ui.json`. It loads effects only, and an effect's only UI there is 6 Knob FX parameters: `knobs` (knobs 1–3) and `shiftKnobs` (knobs 1–3 with SHIFT held) in `plugin.json`, each `{"parameter": <0-based index>, "label": "<about 8 chars>"}`, plus `shortName` (≤ 12 chars) for the list. See `docs/knob-fx.md`.
+
 ## A. The simple way: `ui.json` with the UI kit (default)
 
 Edit `plugins/<Name>/ui.json`; `tools/build.py` turns it into the skin files. Full format: `docs/ui-guide.md`; schema: `schemas/ui.schema.json`. **Never use the generic `slider` in a themed UI. Every parameter you show gets a kit widget (`knob`, `fader` or `switch`).** A bare parameter name in `controls` and `"widget": "slider"` both give the MPC's plain generic bar, which looks out of place beside film-strip knobs; there is no case that needs it (long choice lists use `knob` with `"overlay": "menu"`). The kit graphics live in `ui-kit/` (look at `ui-kit/preview.png`; `ui-kit/README.md` explains them).
