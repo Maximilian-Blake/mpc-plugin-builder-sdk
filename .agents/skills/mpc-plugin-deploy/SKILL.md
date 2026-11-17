@@ -7,7 +7,7 @@ description: Install, list, update, remove or export VST2 plugins on a real Akai
 
 ## MPC Sample: install through its microSD card
 
-An MPC Sample is not installed over the network: do not use `mpc_remote.py` for it. Its plugins go in `VST2 Plugins` on its microSD card, which the computer sees while the MPC Sample is in **SD Card Access** mode (`docs/knob-fx.md`). If the user says "my MPC" and you do not know which model, ask.
+An MPC Sample is not installed over the network: do not use `mpc_remote.py` for it. Its plugins go in `VST2 Plugins` on its microSD card, which the computer sees while the MPC Sample is in **SD Card Access** mode (`docs/knob-fx.md`). If the user says "my MPC" and you do not know which model, ask. The same rule applies as for other MPCs: copy, replace or delete a plugin on the card only when the user has asked for that, in this conversation; a clean build is not permission.
 
 1. **Check the plugin.** It must be an **effect**; the MPC Sample does not load instruments, so tell the user and stop for an instrument. It must have passed the build and `host_sim` checks, and `plugins/<Name>/build/` must hold the `"<Manufacturer> - VST - <Name>"` folder with `file64` (the MPC Sample is 64-bit).
 2. **One message to the user, then wait for the answer.** Ask them to:

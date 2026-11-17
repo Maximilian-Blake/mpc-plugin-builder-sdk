@@ -22,7 +22,9 @@ The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Fo
 %%   2. The agent writes a project in plugins/<Name>/ (C++, UI, presets).
 %%   3. tools/build.py builds it for every MPC with one command.
 %%   4. Install it: copy to a USB drive / SD card, or send it over the network.
-%%   5. Play it: it is listed in the MPC browser under External Plugins.
+%%      Effects also go on an MPC Sample, through its microSD card.
+%%   5. Play it: it is listed in the MPC browser under External Plugins
+%%      (on an MPC Sample, at the bottom of the FX Select list as a Knob FX).
 %%
 %% docs/workflow.md explains each step.
 %% ---------------------------------------------------------------------------
@@ -32,11 +34,14 @@ flowchart LR
     C["<b>3. Build</b><br/>tools/build.py<br/>one command, every MPC"]
     D1["<b>MPC hardware</b><br/>copy to USB drive / SD card<br/>'VST2 Plugins' folder"]
     D2["<b>MPC hardware</b><br/>over the network<br/>tools/mpc_remote.py"]
+    D3["<b>MPC Sample</b> (effects only)<br/>microSD card,<br/>SD Card Access mode"]
     E["<b>5. Play</b><br/>MPC browser:<br/>External Plugins"]
+    F["<b>5. Play</b><br/>MPC Sample: Knob FX,<br/>FX Select list"]
 
     A --> B --> C
     C -->|"4. Install"| D1 --> E
     C -->|"4. Install"| D2 --> E
+    C -->|"4. Install"| D3 --> F
 ```
 
 Each step is explained, with a larger diagram, in **[docs/workflow.md](docs/workflow.md)**.
@@ -70,7 +75,7 @@ Paste one of these prompts into your agent with the SDK folder open:
 | `tools/` | `build.py` (one-command cross-compile for both MPC CPU families + native), `host-sim/` (a command-line host that behaves like the MPC for testing on your computer), `validate.py`, `gen_ui.py`, `package.py`, `mpc_remote.py` (install and manage plugins on an MPC over the network), `new_plugin.py`, `make_ui_kit.py` (film-strip knobs, faders, switches), `make_knob.py`, `docker/`. |
 | `examples/` | `SimpleSynth` (8-voice subtractive synth with presets), `StereoDelay` (tempo-synced effect), `DrumSynth` (multi-output drum instrument). Complete projects you can build and copy. |
 | `templates/` | Minimal instrument and effect projects used by `new_plugin.py`. |
-| `docs/` | The [workflow](docs/workflow.md) from idea to installed plugin, and the specifications: plugin folder and `plugin.json`, the host contract, the scripted UI JSON system (`ui-reference.md`), building, testing, presets, troubleshooting, FAQ and legal notes, and the [changelog](docs/changelog.md). |
+| `docs/` | The [workflow](docs/workflow.md) from idea to installed plugin, and the specifications: plugin folder and `plugin.json`, the host contract, MPC Sample Knob FX (`knob-fx.md`), the scripted UI JSON system (`ui-reference.md`), building, testing, presets, troubleshooting, FAQ and legal notes, and the [changelog](docs/changelog.md). |
 | `ui-kit/` | Stylish unipolar/bipolar film-strip knobs and faders plus matching switches, in several colour themes. `ui.json` uses them through the `knob`, `fader` and `switch` widgets. |
 | `schemas/` | JSON Schemas for `plugin.json` and `ui.json`. |
 | `.claude/skills/`, `.agents/skills/` | Agent skills: new, dsp, ui, build, test, package, presets, deploy (install on an MPC over the network), troubleshoot. |
