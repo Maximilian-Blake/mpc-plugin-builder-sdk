@@ -54,6 +54,7 @@ Commands here say `python`; on macOS and some Linux systems only `python3` exist
 | Need | File |
 |---|---|
 | Mental model | `docs/overview.md` |
+| Which MPCs are supported and how they differ (32-bit, 64-bit, MPC Sample) | `docs/supported-devices.md` |
 | Folder, plugin.json, version.xml | `docs/plugin-folder-format.md` |
 | What the MPC host does | `docs/host-contract.md` |
 | MPC Sample: effects as Knob FX, the 3 + 3 knob mapping | `docs/knob-fx.md` |
