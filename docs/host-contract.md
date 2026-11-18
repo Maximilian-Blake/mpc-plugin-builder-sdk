@@ -82,6 +82,16 @@ Vendor and product string `MPC 3`, VST version 2400. The host answers yes to sen
 
 The MPC never opens a plugin's own graphical editor. Leave the "has editor" flag clear (the framework does). The on-screen UI comes from the JSON skins in the plugin folder, or from the default skin.
 
+## MPC Sample
+
+The MPC Sample (firmware v1.4.0 or later, 64-bit ARM) uses the same host with these differences:
+
+- It loads **effects only**. Instrument plugins are not supported.
+- An effect is loaded as **Knob FX**. Its only UI is **6 parameters**: 3 on the knobs and 3 more while SHIFT is held, chosen and labelled by `knobs` and `shiftKnobs` in `plugin.json`. There is no edit screen and no skins. Value text comes from the plugin as usual.
+- Without a mapping, the knobs control parameters 0–5 labelled `Param 1`–`Param 6`.
+
+Details and the rules for the mapping: `knob-fx.md`.
+
 ## Things to avoid
 
 - Depending on the current working directory. It is set to the plugin folder during creation only. If you need to load files, locate them relative to your own library's path (`dladdr`), or embed them.

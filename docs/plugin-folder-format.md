@@ -12,7 +12,7 @@ Every plugin is one folder, named after the manufacturer and plugin name:
 ├── version.xml              optional: declares the UI format version the skins need
 ├── VST/
 │   ├── <slug>-arm32.so      32-bit ARM build (MPC X, Live, Live II, One, One+, Key 61, Key 37, Force)
-│   └── <slug>-arm64.so      64-bit ARM build (MPC Live III, MPC XL and later 64-bit products)
+│   └── <slug>-arm64.so      64-bit ARM build (MPC Live III, MPC XL, MPC Sample and later 64-bit products)
 ├── Content/                 optional: your own files (samples, wavetables, impulse responses, presets data)
 └── Plugin Skins/            optional: the touch-screen UI and knob mapping
     ├── TUI.json
@@ -57,6 +57,8 @@ Third-party plugins are loaded only by **MPC OS 3.10.1 or later**; earlier firmw
 
 Plugins appear in the plugin browser under **External Plugins**. Instruments are used as plugin programs; effects are used as inserts.
 
+The **MPC Sample** needs **firmware v1.4.0 or later**, with **Dev Enhancements (Beta)** and then **Custom Plug-In Support** turned on in **MIDI Config**. Plugins go in `VST2 Plugins` on its microSD card, copied from the computer in **SD Card Access** mode (`knob-fx.md` has the steps). It loads **effects only** (never instruments), as **Knob FX**; see `knob-fx.md`.
+
 ## plugin.json
 
 A JSON object. Unknown keys are ignored, so you may add `description`, `author`, `url` and `license` for packaging.
@@ -76,6 +78,9 @@ A JSON object. Unknown keys are ignored, so you may add `description`, `author`,
 | `numOutputs` | no | int | Audio outputs. Default 2. **Must be greater than 0** or the plugin never appears in the browser. |
 | `version` | no | string | Free text, e.g. `"1.0.0"`. |
 | `category` | no | string | Free text, e.g. `"Synth"`, `"Effect"`, `"Delay"`. |
+| `shortName` | no (effects: recommended) | string | MPC Sample only: the name shown where there is little room, at most 12 characters. Default: the first 12 characters of `name`. |
+| `knobs` | no (effects: recommended) | array | MPC Sample only: what Knob FX knobs 1–3 control, as up to 3 `{"parameter": <0-based index>, "label": "<text>"}` objects. See `knob-fx.md`. |
+| `shiftKnobs` | no (effects: recommended) | array | MPC Sample only: what knobs 1–3 control while SHIFT is held, same format. See `knob-fx.md`. |
 
 Binary selection rules:
 
@@ -105,6 +110,19 @@ Example:
 Notes on `uid`: the four-character code is interpreted with the first character as the most significant byte, so `"AcWb"` equals `('A' << 24) | ('c' << 16) | ('W' << 8) | 'b'`. In SDK code this is `MPC_FOURCC('A','c','W','b')`. Choose something unlikely to clash with other plugins (two letters of your name, two of the plugin's).
 
 The `kind`, `numInputs` and `numOutputs` values are used to list the plugin before it is ever loaded. After loading, the MPC reads the real values from the binary, so keep them consistent.
+
+An effect with an MPC Sample Knob FX mapping (the delay's time, feedback and mix on the knobs; its filters and sync switch on SHIFT):
+
+```json
+{
+  "kind": "effect",
+  "shortName": "St Delay",
+  "knobs":      [ { "parameter": 2, "label": "Time" },    { "parameter": 3, "label": "Feedback" }, { "parameter": 7, "label": "Mix" } ],
+  "shiftKnobs": [ { "parameter": 4, "label": "Low Cut" }, { "parameter": 5, "label": "High Cut" }, { "parameter": 0, "label": "Sync" } ]
+}
+```
+
+The other MPCs ignore `shortName`, `knobs` and `shiftKnobs`.
 
 ## The binaries
 
@@ -138,7 +156,7 @@ Optional. Lives at the root of the plugin folder.
 
 ## Plugin Skins
 
-The touch UI (`TUI.json`) and knob mapping (`Q-Links.json`). Both optional: without them the MPC shows a generic UI with 16 parameter sliders per page and maps the knobs in order. See `ui-guide.md` for the easy way (a short `ui.json` that the SDK turns into these files) and `ui-reference.md` for the full format.
+The touch UI (`TUI.json`) and knob mapping (`Q-Links.json`). Both optional: without them the MPC shows a generic UI with 16 parameter sliders per page and maps the knobs in order. The MPC Sample does not use skins: its only UI is the 6 Knob FX parameters set by `knobs` and `shiftKnobs` in `plugin.json`. See `ui-guide.md` for the easy way (a short `ui.json` that the SDK turns into these files) and `ui-reference.md` for the full format.
 
 Hardware-specific variants are allowed, for example `Q-Links - 8by1.json` for the Force's 8-in-a-row knob layout; the most specific matching file wins.
 

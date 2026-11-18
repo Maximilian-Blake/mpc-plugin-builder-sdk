@@ -8,7 +8,7 @@ If you already have DSP code written for JUCE, iPlug2 or DPF, keep the DSP class
 
 ## Which MPCs are supported?
 
-Any standalone MPC running **MPC OS 3.10.1 or later**, with External Plugin Support enabled on the device (Preferences → Enhancements (Beta) → Enable Enhancements and External Plugin Support). Older firmware cannot load third-party plugins at all. 32-bit products (MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Force) load the `file32` build; 64-bit products (MPC Live III, MPC XL and later) load the `file64` build. The MPC Studio, Studio Mk II and other controllers run on a computer and are not targets. The desktop MPC software is not a target either, though SDK plugins may well load there.
+Any standalone MPC running **MPC OS 3.10.1 or later**, with External Plugin Support enabled on the device (Preferences → Enhancements (Beta) → Enable Enhancements and External Plugin Support). Older firmware cannot load third-party plugins at all. 32-bit products (MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Force) load the `file32` build; 64-bit products (MPC Live III, MPC XL and later) load the `file64` build. The **MPC Sample** (firmware v1.4.0 or later, 64-bit, Custom Plug-In Support turned on in MIDI Config, plugins copied to its microSD card in SD Card Access mode) loads **effects only**, as Knob FX with 6 knob parameters and no other UI; see `knob-fx.md`. The MPC Studio, Studio Mk II and other controllers run on a computer and are not targets. The desktop MPC software is not a target either, though SDK plugins may well load there.
 
 ## Can my plugin have a custom graphical interface?
 

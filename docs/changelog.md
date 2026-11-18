@@ -1,12 +1,17 @@
 # Changelog
 
-All notable changes to the MPC Plugin SDK are recorded here, newest first. Versions are marked
-with annotated git tags (`v1.0`, `v1.1`, ...).
+All notable changes to the MPC Plugin SDK are recorded here, newest first.
 
 ## Unreleased (will become 1.1)
 
 ### Added
 
+- **MPC Sample support: ability to build Knob FX.** Effect plugins run on the MPC Sample (firmware
+  v1.4.0 or later, *Custom Plug-In Support* on); instruments do not. An effect's `plugin.json`
+  gains `shortName`, `knobs` and `shiftKnobs`: the 3 + 3 parameters on the MPC Sample's knobs,
+  which are the plugin's whole UI there. The effect template and StereoDelay include a mapping,
+  the validator checks and prints it, and the deploy skill installs through the MPC Sample's
+  microSD card in SD Card Access mode. See `docs/knob-fx.md`.
 - **Optional background image per UI page**: a `ui.json` page can name a PNG (`background`)
   from `assets/`, drawn over the background colour and behind the controls.
 - **`ui.json` `qlinkGroups`** (`"columns"` default, or `"rows"`): Q-Link group orientation for

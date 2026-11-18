@@ -26,6 +26,8 @@ namespace {
 // HOW TO: parameters are referred to by index. Keeping the indices in an enum
 // makes get() calls readable and keeps the order in one place.
 // The order here must match the addParam() calls in the constructor.
+// The MPC Sample's Knob FX knobs refer to these indices too: "knobs" and
+// "shiftKnobs" in plugin.json (see docs/knob-fx.md). Keep them in step.
 // ---------------------------------------------------------------------------
 enum ParamIndex
 {

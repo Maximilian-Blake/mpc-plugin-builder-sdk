@@ -14,6 +14,7 @@ From the description, settle:
 - **Name** (short, 1–3 words) and **manufacturer** (the user's name or brand). See "Confirm the manufacturer and plugin name" below; never invent a generic manufacturer such as "MPC Vibecoder".
 - **Parameters**: 6–24 is typical. Each gets a short screen name (≤ 12 chars), a kind (float / int / bool / choice), range, unit, default. Group them into pages of ≤ 16 for the UI.
 - **Channels**: instruments 0 in / 2 out (multi-out: 4, 6 or 8 outs as stereo pairs); effects 2 in / 2 out.
+- **MPC Sample Knob FX (effects only)**: choose the 3 parameters for the knobs and the 3 for SHIFT + knobs, each with a label of about 8 characters, and a `shortName` (≤ 12 characters). On the MPC Sample these 6 are the plugin's whole UI. Put the most-played controls (character, amount) on the knobs and the next most useful on SHIFT; leave SHIFT knobs empty rather than filling them with filler. Show the choice to the user with the parameter list. Instruments do not run on the MPC Sample. See `docs/knob-fx.md`.
 
 ### Confirm the manufacturer and plugin name
 
@@ -45,6 +46,8 @@ Rules that are not negotiable:
 - Keep CPU modest: the MPC is far slower than a laptop. Per-block coefficient updates, per-sample arithmetic only.
 - Parameter `id` strings and the `uid` are permanent once users have projects.
 
+For an effect, set `shortName`, `knobs` and `shiftKnobs` in `plugin.json`: each knob is `{"parameter": <0-based index from ParamIndex>, "label": "..."}`, in knob order 1, 2, 3. The effect template maps its Gain/Tone/Mix; replace that with your own parameters. Always give a label (without one the MPC Sample shows `Param <index + 1>`).
+
 Then edit `ui.json` using the `mpc-plugin-ui` skill: give every control a kit widget (`knob`, `fader` or `switch`, see its heuristics) instead of the generic slider, and pick one theme. Then write `README.md` (what it does, the parameter list, tips). If the plugin needs sample, wavetable or other data files, put them in `plugins/<Name>/Content/` and load them with `mpc::contentPath(...)` / `dsp::loadWav` (see the `mpc-plugin-dsp` skill); never use absolute paths.
 
 ## 4. Build, test, iterate
@@ -53,10 +56,10 @@ Then edit `ui.json` using the `mpc-plugin-ui` skill: give every control a kit wi
 python tools/build.py plugins/<Name>
 .sdk-tools/host_sim "plugins/<Name>/build/native/<slug>.dylib" test --seconds 3 --wav plugins/<Name>/build/test.wav
 ```
-(`.so` on Linux, `.dll` on Windows.) Fix every compiler error and every `FAIL` in the report; take `WARN` lines seriously (silence, clipping, CPU). Rebuild until clean. See the `mpc-plugin-build` and `mpc-plugin-test` skills.
+(`.so` on Linux, `.dll` on Windows.) For effects, read the validator's Knob FX lines (`knob 1 -> [2] "Time" ...`) and check each knob names the parameter you meant. Fix every compiler error and every `FAIL` in the report; take `WARN` lines seriously (silence, clipping, CPU). Rebuild until clean. See the `mpc-plugin-build` and `mpc-plugin-test` skills.
 
 ## 5. Hand over
 
-Always ASK (never install without a yes: the user decides what is installed where) whether they want a test install on a standalone MPC over the network (ask for its IP address; `mpc-plugin-deploy` skill).
+Always ASK (never install without a yes: the user decides what is installed where) whether they want a test install on a standalone MPC over the network (ask for its IP address; `mpc-plugin-deploy` skill). For an effect, also ask whether they want it installed on an MPC Sample through its microSD card (`mpc-plugin-deploy`, MPC Sample section).
 
-Tell the user: the output folder path (`plugins/<Name>/build/<Manufacturer> - VST - <Name>/`), how to copy it to `VST2 Plugins` on a drive, that the MPC needs MPC OS 3.10.1 or later, and that External plugins must be enabled on the device (Preferences → Enhancements (Beta) → Enable Enhancements and External Plugin Support), and offer to package it (`mpc-plugin-package` skill). Summarise the parameters and pages you created.
+Tell the user: the output folder path (`plugins/<Name>/build/<Manufacturer> - VST - <Name>/`), how to copy it to `VST2 Plugins` on a drive, that the MPC needs MPC OS 3.10.1 or later, and that External plugins must be enabled on the device (Preferences → Enhancements (Beta) → Enable Enhancements and External Plugin Support), and offer to package it (`mpc-plugin-package` skill). For an effect, add that it also runs on the MPC Sample as Knob FX (firmware v1.4.0 or later; MIDI Config → Dev Enhancements (Beta), then Custom Plug-In Support) and list its 3 + 3 knobs. For an instrument, say it does not run on the MPC Sample. Summarise the parameters and pages you created.

@@ -17,5 +17,7 @@ Work top-down; stop when the cause is found. Full list in `docs/troubleshooting.
 8. **Crash / freeze** → remove the folder to recover; reproduce in the simulator with `--block 32 --seconds 30`; look for out-of-range indices and uninitialised state.
 9. **Settings lost after update** → `uid` or parameter `id` strings changed. Restore the originals.
 10. **Click on load** → parameter 0 is nudged by the host; make it harmless and smoothed.
+11. **MPC Sample: not in the Knob FX list** → firmware v1.4.0 or later? Dev Enhancements (Beta) and Custom Plug-In Support on in MIDI Config? Is it an effect (instruments are not supported)? `file64` present? Folder directly inside `VST2 Plugins` at the top level of the microSD card? Card ejected on the computer before leaving SD Card Access mode? Look at the bottom of the FX Select list.
+12. **MPC Sample: knobs show `Param 1`, `-` or the wrong parameter** → `knobs` / `shiftKnobs` in `plugin.json` missing, unlabelled or off by one: `parameter` is 0-based, `Param <n>` counts from 1. `validate.py` prints the mapping; see `docs/knob-fx.md`.
 
 When reporting back, say what was checked, what was found, and what changed.

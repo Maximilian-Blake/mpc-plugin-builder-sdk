@@ -4,9 +4,11 @@ MPC Plugin SDK
 
 This SDK allows you to build instrument and effect plugins for Akai MPC standalone hardware from a plain-language description using an AI coding agent, and install it directly onto your MPC. It writes C++ that you never have to read if you do not want to.
 
-The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Force (32-bit) and MPC Live III, MPC XL and later (64-bit).
+The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Force (32-bit) and MPC Live III, MPC XL and later (64-bit). Effects also run on the **MPC Sample** (64-bit) as Knob FX.
 
 **Plugin support requires MPC OS 3.10.1 or later, with the External Plugin Support feature enabled on the device**: Preferences → Enhancements (Beta) → turn on *Enable Enhancements* and *External Plugin Support*.
+
+**MPC Sample**: firmware v1.4.0 or later; in *MIDI Config* turn on *Dev Enhancements (Beta)* and *Custom Plug-In Support*, then copy plugins to `VST2 Plugins` on its microSD card through *SD Card Access* mode. It loads effect plugins only, not instruments, and has no plugin screen: each effect exposes 6 parameters on its knobs (3, plus 3 more while holding SHIFT), set in `plugin.json`. See [docs/knob-fx.md](docs/knob-fx.md).
 
 
 ```mermaid
@@ -20,7 +22,9 @@ The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Fo
 %%   2. The agent writes a project in plugins/<Name>/ (C++, UI, presets).
 %%   3. tools/build.py builds it for every MPC with one command.
 %%   4. Install it: copy to a USB drive / SD card, or send it over the network.
-%%   5. Play it: it is listed in the MPC browser under External Plugins.
+%%      Effects also go on an MPC Sample, through its microSD card.
+%%   5. Play it: it is listed in the MPC browser under External Plugins
+%%      (on an MPC Sample, at the bottom of the FX Select list as a Knob FX).
 %%
 %% docs/workflow.md explains each step.
 %% ---------------------------------------------------------------------------
@@ -30,11 +34,14 @@ flowchart LR
     C["<b>3. Build</b><br/>tools/build.py<br/>one command, every MPC"]
     D1["<b>MPC hardware</b><br/>copy to USB drive / SD card<br/>'VST2 Plugins' folder"]
     D2["<b>MPC hardware</b><br/>over the network<br/>tools/mpc_remote.py"]
+    D3["<b>MPC Sample</b> (effects only)<br/>microSD card,<br/>SD Card Access mode"]
     E["<b>5. Play</b><br/>MPC browser:<br/>External Plugins"]
+    F["<b>5. Play</b><br/>MPC Sample: Knob FX,<br/>FX Select list"]
 
     A --> B --> C
     C -->|"4. Install"| D1 --> E
     C -->|"4. Install"| D2 --> E
+    C -->|"4. Install"| D3 --> F
 ```
 
 Each step is explained, with a larger diagram, in **[docs/workflow.md](docs/workflow.md)**.
@@ -68,7 +75,7 @@ Paste one of these prompts into your agent with the SDK folder open:
 | `tools/` | `build.py` (one-command cross-compile for both MPC CPU families + native), `host-sim/` (a command-line host that behaves like the MPC for testing on your computer), `validate.py`, `gen_ui.py`, `package.py`, `mpc_remote.py` (install and manage plugins on an MPC over the network), `new_plugin.py`, `make_ui_kit.py` (film-strip knobs, faders, switches), `make_knob.py`, `docker/`. |
 | `examples/` | `SimpleSynth` (8-voice subtractive synth with presets), `StereoDelay` (tempo-synced effect), `DrumSynth` (multi-output drum instrument). Complete projects you can build and copy. |
 | `templates/` | Minimal instrument and effect projects used by `new_plugin.py`. |
-| `docs/` | The [workflow](docs/workflow.md) from idea to installed plugin, and the specifications: plugin folder and `plugin.json`, the host contract, the scripted UI JSON system (`ui-reference.md`), building, testing, presets, troubleshooting, FAQ and legal notes, and the [changelog](docs/changelog.md). |
+| `docs/` | The [workflow](docs/workflow.md) from idea to installed plugin, the [supported MPCs](docs/supported-devices.md) and how they differ, and the specifications: plugin folder and `plugin.json`, the host contract, MPC Sample Knob FX (`knob-fx.md`), the scripted UI JSON system (`ui-reference.md`), building, testing, presets, troubleshooting, FAQ and legal notes, and the [changelog](docs/changelog.md). |
 | `ui-kit/` | Stylish unipolar/bipolar film-strip knobs and faders plus matching switches, in several colour themes. `ui.json` uses them through the `knob`, `fader` and `switch` widgets. |
 | `schemas/` | JSON Schemas for `plugin.json` and `ui.json`. |
 | `.claude/skills/`, `.agents/skills/` | Agent skills: new, dsp, ui, build, test, package, presets, deploy (install on an MPC over the network), troubleshoot. |
@@ -77,7 +84,7 @@ Paste one of these prompts into your agent with the SDK folder open:
 
 - Python 3.9 or newer. Everything else (the Zig cross compiler) is fetched on first build, or use your own GNU cross compilers / Docker (`docs/building.md`).
 - macOS, Windows or Linux.
-- An MPC running MPC OS 3.10.1 or later, with External Plugin Support enabled in Preferences → Enhancements (Beta), plus a USB drive or SD card.
+- An MPC running MPC OS 3.10.1 or later, with External Plugin Support enabled in Preferences → Enhancements (Beta), plus a USB drive or SD card; or an MPC Sample running firmware v1.4.0 or later with Custom Plug-In Support on (effects only), a microSD card and a USB cable.
 
 ## How it works, briefly
 
