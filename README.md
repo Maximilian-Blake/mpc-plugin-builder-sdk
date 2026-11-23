@@ -12,6 +12,7 @@ The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Fo
 
 
 ```mermaid
+flowchart LR
 %% ---------------------------------------------------------------------------
 %% Seeing this as text instead of a picture? This is a Mermaid diagram.
 %% It is drawn automatically on GitHub. In VS Code, install the extension
@@ -28,7 +29,6 @@ The plugins can run on MPC X, X SE, Live, Live II, One, One+, Key 61, Key 37, Fo
 %%
 %% docs/workflow.md explains each step.
 %% ---------------------------------------------------------------------------
-flowchart LR
     A["<b>1. Describe</b><br/>'Make a tempo-synced tape delay<br/>with a ping-pong switch'"]
     B["<b>2. Agent writes it</b><br/>plugins/TapeDelay/<br/>C++, UI, presets"]
     C["<b>3. Build</b><br/>tools/build.py<br/>one command, every MPC"]

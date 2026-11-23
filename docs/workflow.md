@@ -14,13 +14,13 @@ The example is a delay effect called "Tape Delay" by a manufacturer called "Acme
 ## The whole picture
 
 ```mermaid
+flowchart TD
 %% ---------------------------------------------------------------------------
 %% Seeing this as text instead of a picture? This is a Mermaid diagram.
 %% It is drawn automatically on GitHub. In VS Code, install the extension
 %% "Markdown Preview Mermaid Support", or paste this block into
 %% https://mermaid.live. The sections below say the same thing in words.
 %% ---------------------------------------------------------------------------
-flowchart TD
     IDEA["<b>1. Your idea</b><br/>'Make a tempo-synced tape delay with a<br/>feedback filter and a ping-pong switch'"]
 
     subgraph PROJECT["2. The project: plugins/TapeDelay/ (written by the agent, by you, or both)"]
